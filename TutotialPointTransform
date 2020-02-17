@@ -29,6 +29,7 @@
       </div>
 	  <script>
          d3.select("body").transition().style("background-color", "lightblue").duration(3000);
+		 d3.select("body").transition().style("background-color", "lightgray").delay(3000).duration(3000);
       </script>
    </body>
 </html>
