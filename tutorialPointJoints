@@ -1,4 +1,3 @@
-Live Demo 
 <!DOCTYPE html>
 <html>
    <head>
@@ -9,14 +8,14 @@ Live Demo
    </head>
 
    <body>
-      <ul id = "list">
+       <input type = "button" name = "remove" value = "Remove fourth value" 
+         onclick = "javascript:removeF()" />
+      
+     <ul id = "list">
          <li></li>
          <li></li>
       </ul>
         
-      <input type = "button" name = "remove" value = "Remove fourth value" 
-         onclick = "javascript:remove()" />
-      
       <script>
          d3.select("#list").selectAll("li")
             .data([10, 20, 30, 25, 15])
@@ -27,8 +26,8 @@ Live Demo
             .text(function(d) 
                { return "This is dynamically created element and the value is " + d; });
              
-         function remove() {
-            d3.selectAll("li")
+         function removeF() {
+            d3.select("#list").selectAll("li")
             .data([10, 20, 30, 15])
             .exit()
             .remove()
