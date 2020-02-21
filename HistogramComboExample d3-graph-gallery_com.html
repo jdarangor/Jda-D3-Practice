@@ -47,43 +47,43 @@
 		  .call(d3.axisBottom(xJda));
 
 	  // set the parameters for the histogram
-	  var histogram = d3.histogram()
+	  var histogramJda = d3.histogram()
 		  .value(function(d) { return +d.value; })   // I need to give the vector of value
 		  .domain(xJda.domain())  // then the domain of the graphic
 		  .thresholds(xJda.ticks(40)); // then the numbers of bins
 
 	  // And apply twice this function to data to get the bins.
-	  var bins1 = histogram(data.filter( function(d){return d.type === "variable 1"} ));
-	  var bins2 = histogram(data.filter( function(d){return d.type === "variable 2"} ));
+	  var binsJda1 = histogramJda(data.filter( function(d){return d.type === "variable 1"} ));
+	  var binsJda2 = histogramJda(data.filter( function(d){return d.type === "variable 2"} ));
 
 	  // Y axis: scale and draw:
-	  var y = d3.scaleLinear()
+	  var yJda = d3.scaleLinear()
 		  .range([height, 0]);
-		  y.domain([0, d3.max(bins1, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
+		  yJda.domain([0, d3.max(binsJda1, function(d) { return d.length; })]);   // d3.hist has to be called before the Y axis obviously
 	  svgJda.append("g")
-		  .call(d3.axisLeft(y));
+		  .call(d3.axisLeft(yJda));
 
 	  // append the bars for series 1
 	  svgJda.selectAll("rect")
-		  .data(bins1)
+		  .data(binsJda1)
 		  .enter()
 		  .append("rect")
 			.attr("x", 1)
-			.attr("transform", function(d) { return "translate(" + xJda(d.x0) + "," + y(d.length) + ")"; })
+			.attr("transform", function(d) { return "translate(" + xJda(d.x0) + "," + yJda(d.length) + ")"; })
 			.attr("width", function(d) { return xJda(d.x1) - xJda(d.x0) -1 ; })
-			.attr("height", function(d) { return height - y(d.length); })
+			.attr("height", function(d) { return height - yJda(d.length); })
 			.style("fill", "#69b3a2")
 			.style("opacity", 0.6)
 
 	  // append the bars for series 2
 	  svgJda.selectAll("rect2")
-		  .data(bins2)
+		  .data(binsJda2)
 		  .enter()
 		  .append("rect")
 			.attr("x", 1)
-			.attr("transform", function(d) { return "translate(" + xJda(d.x0) + "," + y(d.length) + ")"; })
+			.attr("transform", function(d) { return "translate(" + xJda(d.x0) + "," + yJda(d.length) + ")"; })
 			.attr("width", function(d) { return xJda(d.x1) - xJda(d.x0) -1 ; })
-			.attr("height", function(d) { return height - y(d.length); })
+			.attr("height", function(d) { return height - yJda(d.length); })
 			.style("fill", "#404080")
 			.style("opacity", 0.6)
 
