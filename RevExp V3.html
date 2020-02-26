@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+   <head>
+	  <title>Expense Revenue Overlapped </title>
+      <script type = "text/javascript" src = "https://d3js.org/d3.v4.min.js"></script>
+	  <style>
+<!-- 		h3{
+			align: center;
+		}
+ -->	  </style>
+   </head>
+
+   <body>
+      <h3> Expense Revenue Overlapped </h3>
+	  <div id="my_dataviz"></div>
+ <script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 20, left: 50},
+    width = 460 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// Parse the Data
+d3.csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stacked.csv", function(data) {
+//d3.csv("data_stacked.csv", function(data) {
+
+  // List of subgroups = header of the csv files = soil condition here
+  var subgroups = data.columns.splice(1,2)
+
+  // List of groups = species here = value of the first column called group -> I show them on the X axis
+  var groups = d3.map(data, function(d){return(d.group)}).keys()
+
+  // Add X axis
+  var x = d3.scaleBand()
+      .domain(groups)
+      .range([0, width])
+      .padding([0.2])
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")") // Dynamic attr assignment
+    .call(d3.axisBottom(x).tickSize(0));
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, 40])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+  // Another scale for subgroup position?
+  var xSubgroup = d3.scaleBand()
+    .domain(subgroups)
+    .range([0, x.bandwidth()])
+    .padding([0.05])
+
+  // color palette = one color per subgroup
+  var color = d3.scaleOrdinal()
+    .domain(subgroups)
+    .range(['#377eb8','#e41a1c','#4daf4a'])
+		  // ----------------
+		  // Highlight a specific subgroup when hovered FROM STACKED BAR Example
+		  // ----------------
+
+		  // What happens when user hover a bar
+		  var mouseover = function(d) {
+			// what subgroup are we hovering?
+			var subgroupName = this.className.baseVal; // This was the tricky part
+			//var subgroupValue = d.data[subgroupName];
+			// Reduce opacity of all rect to 0.2
+			d3.selectAll("Rect").style("opacity", 0.2)
+			// Highlight all rects of this subgroup with opacity 0.8. It is possible to select them since they have a specific class = their name.
+			d3.selectAll("."+subgroupName)
+			  .style("opacity", 1)
+			}
+/* */
+		  // When user do not hover anymore
+		  var mouseleave = function(d) {
+			// Back to normal opacity: 0.8
+			d3.selectAll("Rect")
+			  .style("opacity",0.7)
+			}
+ 
+  // Show the bars
+  svg.append("g")
+    .selectAll("g")
+    // Enter in data = loop group per group
+    .data(data)
+    .enter()
+    .append("g")
+      .attr("transform", function(d) { return "translate(" + x(d.group) + ",0)"; })
+    .selectAll("rect")
+   .data(function(d) { return subgroups.map(function(key) { return {key: key, value: d[key]}; }); })
+    .enter().append("rect")
+      .attr("x", 0 ) //function(d) { return xSubgroup(d.key); }) // assign rect position within groups
+      .attr("y", function(d) { return y(d.value); })
+      //.attr("width", xSubgroup.bandwidth())
+      .attr("width", x.bandwidth())
+      .attr("height", function(d) { return height - y(d.value); })
+      .attr("fill", function(d) { return color(d.key); })
+//			  .attr("class", function(d){ return "myRect " + d.key }) // Add a class to each subgroup: their name
+			  .attr("class", function(d){ return d.key }) // Add a class to each subgroup: their name
+ 	  //.attr("text", function(d){ return d.value})
+	  .style("opacity", 0.7)
+			.on("mouseover", mouseover)
+			.on("mouseleave", mouseleave)
+;
+	  // Handmade legend
+	  svg.append("circle").attr("cx",300).attr("cy",30).attr("r", 6).style("fill", "#377eb8").style("opacity", 0.7)
+	  svg.append("circle").attr("cx",300).attr("cy",60).attr("r", 6).style("fill", "#e41a1c").style("opacity", 0.7)
+	  svg.append("text").attr("x", 315).attr("y", 35).text("Revenue").style("font-size", "15px").attr("alignment-baseline","middle")
+	  svg.append("text").attr("x", 315).attr("y", 65).text("Expense").style("font-size", "15px").attr("alignment-baseline","middle")
+
+})
+
+</script>
+   </body>
+</html>
