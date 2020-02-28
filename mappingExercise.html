@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Click the button to get the square root of each element in the array.</p>
+
+<button onclick="jdaFunction(age,data)">Try it</button>
+
+<p id="demo"></p>
+
+<script>
+var numbers = [4, 9, 16, 25];
+
+function myFunction() {
+  x = document.getElementById("demo")
+  x.innerHTML = numbers.map(Math.sqrt);
+}
+function jdaFunction(accessor,callback){data =[ {age:'0', people:'121', sex:'1', year:'1910'},
+{age:'0', people:'122', sex:'2', year:'1910'},
+{age:'5', people:'125', sex:'1', year:'1910'},
+{age:'5', people:'126', sex:'2', year:'1910'},
+{age:'10', people:'131', sex:'1', year:'1910'},
+{age:'10', people:'122', sex:'2', year:'1910'}
+];
+		data = data.map(function(d) { return accessor(d)});
+	callback(data);
+    x = document.getElementById("demo")
+    x.innerHTML = numbers.map(Math.sqrt);
+}
+</script>
+
+</body>
+</html>
